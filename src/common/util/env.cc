@@ -152,4 +152,12 @@ int64_t get_maximum_shared_memory() {
   return shmmax;
 }
 
+/**
+ * @brief Return the size of physical cores.
+ * 
+ */
+unsigned int get_num_cores() {
+  return std::thread::hardware_concurrency();
+}
+
 }  // namespace vineyard

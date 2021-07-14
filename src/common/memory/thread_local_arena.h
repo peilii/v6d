@@ -30,7 +30,7 @@ public:
     ThreadLocalArena();
     ~ThreadLocalArena();
 
-    int Init(int nr_pages);
+    int Init(size_t size);
 
     void* Reserve(size_t size, size_t alignment);
 
@@ -59,8 +59,7 @@ private:
     uintptr_t end_{0};
     uintptr_t free_ptr_{0};
     unsigned arena_index_{0};
-    extent_hooks_t extentHooks_;
-
+    extent_hooks_t extent_hooks_;
 };
 
 }  // namespace memory

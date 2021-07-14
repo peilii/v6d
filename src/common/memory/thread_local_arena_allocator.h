@@ -18,6 +18,14 @@ limitations under the License.
 
 #if defined(WITH_THREAD_LOCAL_ARENA_)
 
+class ThreadLocalArenaAllocator {
+    ThreadLocalArenaAllocator();
+    ~ThreadLocalArenaAllocator();
+
+    void Init(size_t size);
+
+    
+}
 
 #endif  // WITH_THREAD_LOCAL_ARENA_
 

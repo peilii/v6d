@@ -22,7 +22,10 @@ limitations under the License.
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include <benchmark/benchmark.h>
+#include "gtest/gtest.h"
 
+#include "common/util/env.h"
 #include "common/memory/thread_local_arena.h"
 #include "common/memory/thread_local_arena_allocator.h"
 
@@ -32,7 +35,9 @@ class ThreadLocalArenaTest {
 public:
     explicit ThreadLocalArenaTest(ThreadLocalArena& arena) : arena_(arena) {}
 
-    void Allocate(size_t size);
+    void Allocate(size_t size) {
+        uint8_t* p = static_cast<uint8_t*>(arena_->Allocate(size));
+    }
 
     void Deallocate(void* address);
 
@@ -43,7 +48,23 @@ private:
 
 };
 
+namespace thread_arena_test {
+    TEST(ThreadLocalArenaTest, SingleThreaded) {
+
+    }
+
+    TEST(ThreadLocalArenaTest, MultiThreaded) {
+
+    }
+
+    TEST(ThreadLocalArenaTest, ThreadLocalArenaAllocator) {
+
+    }
+}
 
 int main(int argc, char** argv) {
-    return 0;
+    testing::InitGoogleTest(&argc, argv);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+    auto ret = RUN_ALL_TESTS();
+    return ret;
 }
