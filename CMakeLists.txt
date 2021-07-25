@@ -26,7 +26,7 @@ option(BUILD_VINEYARD_PYPI_PACKAGES "Build vineyard's python bindings" OFF)
 
 option(BUILD_VINEYARD_BASIC "Build vineyard's basic data structures" ON)
 option(BUILD_VINEYARD_IO "Enable vineyard's IOAdaptor support" ON)
-option(BUILD_VINEYARD_GRAPH "Enable vineyard's graph data structures" ON)
+option(BUILD_VINEYARD_GRAPH "Enable vineyard's graph data structures" OFF)
 option(BUILD_VINEYARD_MALLOC "Build vineyard's implementation for client-side malloc" ON)
 option(BUILD_VINEYARD_MIGRATION "Enable vineyard's object migration support" ON)
 
@@ -548,7 +548,7 @@ if(BUILD_VINEYARD_TESTS)
         if(BUILD_VINEYARD_TESTS_ALL)
             add_executable(${T_NAME} test/${T_NAME}.cc)
         else()
-            add_executable(${T_NAME} EXCLUDE_FROM_ALL test/${T_NAME}.cc)
+            add_executable(${T_NAME} EXCLUDE_FROM_ALL test/${T_NAME}.cc test/jemalloc_test.cc)
         endif()
 
         target_link_libraries(${T_NAME} PRIVATE

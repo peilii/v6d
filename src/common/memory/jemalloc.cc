@@ -56,6 +56,7 @@ void* Jemalloc::Init(void* space, const size_t size) {
   }
 
   arena_index_ = narenas;  // starts from 0
+  LOG(INFO) << "narenas: " << narenas;
   if (arena_index_ >= MAXIMUM_ARENAS) {
     LOG(ERROR) << "There can be " << MAXIMUM_ARENAS << " arenas at most";
     return nullptr;
@@ -74,13 +75,26 @@ void* Jemalloc::Init(void* space, const size_t size) {
   size_t arena_index_size = sizeof(arena_index_);
   if (auto ret =
           vineyard_je_mallctl("arenas.create", &arena_index_, &arena_index_size,
-                              &extent_hooks_, sizeof(extent_hooks_))) {
+                              nullptr, 0)) {
     int err = std::exchange(errno, ret);
     PLOG(ERROR) << "Failed to create arena";
     errno = err;
     return nullptr;
   }
   LOG(INFO) << "arena index = " << arena_index_;
+
+  // set extent hooks
+  std::ostringstream hooks_key;
+  hooks_key << "arena." << std::to_string(arena_index_) << ".extent_hooks";
+  size_t len = sizeof(extent_hooks_);
+  if (auto ret =
+      vineyard_je_mallctl(hooks_key.str().c_str(), &extent_hooks_, &len,
+                          nullptr, 0)) {
+    int err = std::exchange(errno, ret);
+    PLOG(ERROR) << "Failed to create arena";
+    errno = err;
+    return nullptr;
+  }
 
   // set muzzy decay time to -1 to prevent jemalloc freeing the memory to the
   // pool, but leave dirty decay time untouched to still give the memory back
